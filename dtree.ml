@@ -23,7 +23,7 @@ module Dtree =
 		 *)
 		let rec vars = function
 			| Leaf(a,b) -> varSet_init [a;b]
-      | Node(l, r) -> VarSet.union (vars l) ( vars r )
+      | Node(l,r) -> VarSet.union (vars l) ( vars r )
 
 		(**
 		 * fun graph -> dtree -> varSet
@@ -48,5 +48,20 @@ module Dtree =
 			| Node(l,r) ->
 				let intersection = VarSet.inter (vars l) (vars r) in
 				VarSet.diff intersection ctxt		
-			 
+		
+		(**
+		 * fun graph -> dtree -> int
+		 * size of largest cluster -1
+		 *)
+		let size g t =
+			let rec largest_cluster = function
+				| Leaf(a,b) as leaf -> VarSet.cardinal (vars leaf)
+				| Node(l,r) as t ->
+					let ctxt = context g t in
+					let cutset = cutset ctxt t in
+					let cluster_sz = VarSet.cardinal ( VarSet.union ctxt cutset ) in
+					max cluster_sz (max (largest_cluster l) (largest_cluster r))
+				in
+			(largest_cluster t) - 1 
+				
    end;;

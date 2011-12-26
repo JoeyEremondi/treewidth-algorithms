@@ -27,6 +27,5 @@ let dt =
 
 let ctxt = Dtree.context g dt
 let cs = Dtree.cutset ctxt dt
-
-(* VarSet.elements ctxt *)
-(* VarSet.elements cs *)
+let s = Dtree.size g dt
+let () = print_int s; print_newline ()

@@ -6,4 +6,3 @@ module Graph =
 		let neighborhood g u =
 			g.e.(u)
 	end;;
-	

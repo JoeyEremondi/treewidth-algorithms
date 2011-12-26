@@ -1,6 +1,6 @@
 open Dtree
 open Graph
-
+open Treewidth
 
 let g = {
 	n = 5;
@@ -27,5 +27,9 @@ let dt =
 
 let ctxt = Dtree.context g dt
 let cs = Dtree.cutset ctxt dt
-let s = Dtree.size g dt
-let () = print_int s; print_newline ()
+let dt_s = Dtree.size g dt
+let () = print_int dt_s; print_newline ()
+
+let tw = Treewidth.treewidth g
+let () = print_int tw; print_newline ()
+

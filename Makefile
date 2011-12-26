@@ -1,2 +1,3 @@
 all:
-	g++ -L. -lhmetis main.cpp
+	ocamlc graph.ml dtree.ml hypergraph.ml treewidth.ml main.ml
+

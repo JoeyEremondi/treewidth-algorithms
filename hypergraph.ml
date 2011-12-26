@@ -2,6 +2,8 @@
 open Graph
 open Printf
 
+exception StopThisShitBeforeItsTooLate of string
+
 module Hypergraph = 
   struct
     type hypergraph = {
@@ -28,11 +30,17 @@ module Hypergraph =
 			 *)
 			let build_hg u l =
 				let bind_hv v =
-					let edge = (u,v) in
-					Hashtbl.add e2hv_map edge !n;
-					Hashtbl.add hv2e_map !n edge;
-					incr n;
-					!n - 1
+					let edge = if u < v then (u,v) else (v,u) in
+					try
+						let hv = Hashtbl.find e2hv_map edge in
+						hv
+					with | Not_found -> begin
+            let hv = !n in
+						Hashtbl.add e2hv_map edge hv;
+					  Hashtbl.add hv2e_map hv edge;
+					  incr n;
+					  hv
+				  end
 				in
 			  List.map bind_hv l
 			in
@@ -56,28 +64,37 @@ module Hypergraph =
       else
         None
     
+
+    (**
+     * hypergraph -> filename
+     * write h in a.hgr format
+     *)
+    let _to_hgr h =
+        let name = "hypergraph.hgr" in
+        let out = open_out name in
+        fprintf out "%d %d\n" h.m h.n;
+        Array.iter ( fun l ->
+            List.iter ( fun hv -> fprintf out "%d " hv ) l;
+            output_char out '\n'
+            ) h.he;
+				close_out out;
+      name
+	
+		(** TODO
+     * filename -> ololol
+		 * sup ?
+		 *)
+		let callhmetis hgr =
+			()
+			
 		(** TODO
 		 * hypergraph -> (hypergraph * hypergraph)
 		 * partition h in two hypergraph via hmetis
 		 *)
-(*    let partition h =            *)
-(*      let hgr = _to_hgr h in     *)
-(*      let res = callhmetis hgr in*)
-(*			  (h1, h2)                 *)
-       
-		(**
- 	   * hypergraph -> filename
-		 * write h in a.hgr format
-		 *)
-		let _to_hgr h =
-			let name = "hypergraph.hgr" in
-			let out = open_out name in
-			fprintf out "%d %d\n" h.m h.n;
-			Array.iter ( fun l ->
-				List.iter ( fun hv -> fprintf out "%d " hv ) l;
-				output_char out '\n'
-				) h.he;
-		  name
+    let partition h =
+      let hgr = _to_hgr h in
+      let res = callhmetis hgr in
+			  raise (StopThisShitBeforeItsTooLate "lol")
 			
 			
 (*    let minimise h =                                                                    *)

@@ -4,7 +4,7 @@ open Treewidth
 open Hypergraph
 
 let g = {
-	n = 5;
+	Graph.n = 5;
 	m = 5;
 	e = [|
 		[1;2];
@@ -15,17 +15,17 @@ let g = {
 		|] }
 
 let dt =
-  Node(
-		Node(
-			Leaf(0,1),
-			Leaf(0,2) ),
-		Node(
-			Leaf(2,4),
-			Node(
-				Leaf(1,2),
-				Node(
-					Leaf(2,3),
-					Leaf(1,3) ) ) ) )
+  Dtree.Node(
+		Dtree.Node(
+			Dtree.Leaf(0,1),
+			Dtree.Leaf(0,2) ),
+		Dtree.Node(
+			Dtree.Leaf(2,4),
+			Dtree.Node(
+				Dtree.Leaf(1,2),
+				Dtree.Node(
+					Dtree.Leaf(2,3),
+					Dtree.Leaf(1,3) ) ) ) )
 
 let ctxt = Dtree.context g dt
 let cs = Dtree.cutset ctxt dt

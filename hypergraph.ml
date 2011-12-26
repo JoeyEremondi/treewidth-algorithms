@@ -80,12 +80,12 @@ module Hypergraph =
 				close_out out;
       name
 	
-		(** TODO
-     * filename -> ololol
-		 * sup ?
+		(**
+     * filein -> fileout
+		 * system call to hmetis
 		 *)
 		let callhmetis hgr =
-			()
+			Unix.system "echo \"LOLOL run this hmetis shit\""
 			
 		(** TODO
 		 * hypergraph -> (hypergraph * hypergraph)

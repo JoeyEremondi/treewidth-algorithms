@@ -1,9 +1,11 @@
 open Dtree
 open Graph
 open Treewidth
+open Hypergraph
 
 let g = {
 	n = 5;
+	m = 5;
 	e = [|
 		[1;2];
 		[0;2;3];

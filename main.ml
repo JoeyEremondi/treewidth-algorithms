@@ -29,7 +29,7 @@ let dt =
           Dtree.Leaf(1,3) ) ) ) )
 *)
 
-let g = Graph.read_dgf "alarm.dgf"
+let g = Graph.read_dgf Sys.argv.(1)
 (*
 let ctxt = Dtree.context g dt
 let cs = Dtree.cutset ctxt dt

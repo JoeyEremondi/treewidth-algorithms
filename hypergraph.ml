@@ -60,7 +60,7 @@ struct
       Some (h.hv2e 0)
     else
       None
-	
+  
   (**
    * hypergraph -> filename
    * write h in a.hgr format
@@ -77,18 +77,18 @@ struct
     name
       
   (**
-   * string -> in_chan
+   * string -> int -> in_chan
    * system call to hmetis
    *)
-  let callhmetis hgr =
-    let _ = Unix.system ("./shmetis "^hgr^" 2 1 > /dev/null") in
+  let callhmetis hgr ubFactor =
+    let _ = Unix.system ("./shmetis "^hgr^" 2 "^(string_of_int ubFactor)^" > /dev/null") in
     ( open_in (hgr^".part.2") )
       
   (**
-   * hypergraph -> (hypergraph * hypergraph)
+   * hypergraph -> int -> (hypergraph * hypergraph)
    * partition h in two hypergraph via hmetis
    *)
-  let partition h =
+  let partition h ubFactor =
     let nl = ref 0
     and nr = ref 0
     and e2hv_mapl = Hashtbl.create 1
@@ -114,13 +114,14 @@ struct
     in
     
     let hgr = to_hgr h in
-    let partition_file = callhmetis hgr in
+    let partition_file = callhmetis hgr ubFactor in
     
     (* scan the file containing the partition output by hmetis *)
     for i=0 to (h.n - 1) do
       let part = fscanf partition_file "%d\n" (fun n -> n) in
       build_maps i part
     done;
+    close_in partition_file;
     
     let hv2e_l = (fun hv -> Hashtbl.find hv2e_mapl hv)
     and hv2e_r = (fun hv -> Hashtbl.find hv2e_mapr hv)

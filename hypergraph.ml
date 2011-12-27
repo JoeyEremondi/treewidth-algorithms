@@ -60,7 +60,7 @@ struct
       Some (h.hv2e 0)
     else
       None
-
+	
   (**
    * hypergraph -> filename
    * write h in a.hgr format

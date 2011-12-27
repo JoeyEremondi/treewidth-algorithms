@@ -3,6 +3,7 @@ open Graph
 open Treewidth
 open Hypergraph
 
+(*
 let g = {
   Graph.n = 5;
   m = 5;
@@ -26,12 +27,15 @@ let dt =
         Dtree.Node(
           Dtree.Leaf(2,3),
           Dtree.Leaf(1,3) ) ) ) )
+*)
 
+let g = Graph.read_dgf "alarm.dgf"
+(*
 let ctxt = Dtree.context g dt
 let cs = Dtree.cutset ctxt dt
 let dt_s = Dtree.size g dt
 let () = print_int dt_s; print_newline ()
-
+*)
 let tw = Treewidth.treewidth g
 let () = print_int tw; print_newline ()
 

@@ -27,9 +27,9 @@ module Treewidth =
         
       for ubPower=0 to 4 do
         let ubFactor = int_of_float(2. ** (float_of_int ubPower)) in
-        printf "ub:%d\n" ubFactor; flush stdout;
+        printf "\nub:%d\n" ubFactor; flush stdout;
         
-        for trial=0 to nbTrials do
+        for trial=1 to nbTrials do
           let dt = hgr2bdt h ubFactor in
             
           let sz = Dtree.size g dt in

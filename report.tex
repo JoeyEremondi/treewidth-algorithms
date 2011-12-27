@@ -1,0 +1,83 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+%\usepackage{a4wide}
+\usepackage{amsthm}
+\usepackage{amsmath}
+
+
+\title{Modèles graphiques probabilistes}
+\author{Charles-Pierre Astolfi, Émile Contal} 
+\date{3 janvier 2012}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Le but de cet article de donner un algorithme qui permette
+d'approximer la largeur arborescente (treewidth) d'un graphe.
+
+Beaucoup de problèmes de graphes (par exemple, l'inférence bayesienne)
+peuvent être résolus en temps polynomial sur des graphes de largeur
+arborescente bornée. Le calcul exact de la largeur arborescente est un
+problème est NP-complet et nécessite l'utilisation d'heuristiques. Ce
+rapport est dédié à l'étude d'un de ces algorithmes, décrit dans
+\cite{rootpaper}.
+
+\end{abstract}
+
+\section{Introduction}
+Dans le cadre de l'article ``A Practical Relaxation of Constant-Factor
+Treewidth Approximation Algorithms'' (\cite{rootpaper}), nous avons
+implémenté l'algorithme proposé et l'avons comparé à d'autres
+algorithmes de calcul de treewidth.
+
+
+\section{Définitions}
+
+Soit $G = (V,E)$ un graphe non-orienté sans boucle. On dira que $G$
+est connecté s'il existe un chemin entre chaque paire de sommets de
+$G$.
+
+
+On dit que $G$ est triangulé si pour tout cycle de longueur supérieure
+strictement à 3, il existe une arête entre deux sommets non-adjacents
+du cycle. La largeur d'un graphe triangulé est la taille de sa plus
+grande clique moins 1.
+
+Enfin, la largeur arborescente d'un graphe est la largeur minimale
+obtenable parmi toutes les triangulations possibles.
+
+Un \emph{dtree} d'un graphe $G$ non-orienté est un arbre binaire
+complet, dont les feuilles sont les arêtes de $G$.
+
+Il permet de guider les algorithmes de partitionnement de type
+\emph{divide-et-conquere}.
+
+Il existe une définition de la largueur d'un dtree telle qu'on puisse
+construire une triangulation du graphe $G$ dont la largeur
+arborescente est la largeur du dtree, ce qui borne la largeur
+arborescente de $G$.
+
+Notre objectif est de donc construire un dtree de largeur la plus
+petite possible ; pour ce faire on partitionne un hypergraphe $H(G)$
+définit ainsi :
+$$ H(G) = (E,\{ \{ (u,v) \in E \} \mid u \in V \}) $$
+
+Le partitionnement de $H(G)$ est fait, comme dans l'article, grâce à
+la librairie hMetis, qui utilise des heuristiques randomisées.
+
+On sait qu'il existe des partitions qui mènent à un bon ratio
+d'approximation de la largeur arborescente, mais bien qu'on ait pas de
+garantie de trouver cette partition, l'algorithme semble battre en
+pratique toutes les autres heuristiques connues.
+
+\section{Implémentation}
+
+\section{Résultats et discussion}
+
+
+\bibliographystyle{amsplain}
+\bibliography{biblio}
+
+\end{document}

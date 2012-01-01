@@ -5,6 +5,9 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{algorithm}
+\usepackage{tikz}
+\usetikzlibrary{topaths,calc}
+
 
 \title{Modèles graphiques probabilistes}
 \author{Charles-Pierre Astolfi, Émile Contal} 
@@ -88,6 +91,119 @@ garantie de trouver cette partition, l'algorithme semble battre en
 pratique toutes les autres heuristiques connues.
 
 
+
+\begin{figure}[h!]
+ \centering
+\begin{tikzpicture}[auto, node distance=2cm]
+  \node[] (1) {A};
+  \node[below left of=1] (2) {B};
+  \node[below right of=1] (3) {C};
+  \node[below right of=2] (4) {D};
+  \node[below right of=3] (5) {E};
+ \path
+  (1) edge node {} (2)
+  (1) edge node {} (3)
+  (2) edge node {} (3)
+  (2) edge node {} (4)
+  (3) edge node {} (4)
+  (3) edge node {} (5);
+\end{tikzpicture}
+\caption{Exemple de graphe $G$}
+\end{figure}
+
+\begin{figure}[h!]
+  \tikzstyle{internal} = [rectangle, draw]
+  \tikzstyle{level 1} = [sibling distance=4cm]
+  \tikzstyle{level 2} = [sibling distance=3cm]
+  \tikzstyle{level 3} = [sibling distance=2cm]
+  \tikzstyle{level 4} = [sibling distance=1.5cm]
+  \centering
+ \begin{tikzpicture}
+    \node [internal] (0) {(\{B,C\}, \{\})}
+    child{
+      node [internal] (1) { (\{A\}, \{B,C\}) }
+      child{
+        node[] (2) { AB }
+      }
+      child{
+        node[] (3) { AC }
+      }
+    }
+    child{ 
+      node [internal] (4) { (\{\}, \{B,C\}) }
+      child{
+        node[] (5) { CE }
+      }
+      child{
+        node [internal] (6) { (\{\}, \{B,C\}) }
+        child{
+          node [] (7) {BC}
+        }
+        child {
+          node [internal] (8)  { (\{D\}, \{B,C\}) }
+          child{
+            node[] (9) {CD}
+          }
+          child{
+            node[] (10) {BD}
+          }
+        }
+      }
+    };
+ \end{tikzpicture}
+ \caption{Exemple de dtree du graphe $G$ avec les contextes et cutsets}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+
+  \begin{tikzpicture}
+    \node (ab) at (0,2) {};
+    \node (ac) at (0,0) {};
+    \node (bc) at (1,1) {};
+    \node (bd) at (2,2) {};
+    \node (cd) at (3.5,2) {};
+    \node (ce) at (4,0) {};
+
+    \begin{scope}[fill opacity=0.8]
+    \filldraw[fill=green!80] ($(ac)+(-0.5,0)$)
+        to[out=90,in=180] ($(bc)+(0,0.3)$)
+        to[out=0,in=270] ($(cd)+(-0.5,-1)$)
+        to[out=90,in=180] ($(cd)+(0,0.5)$)
+        to[out=0,in=90] ($(cd)+(0.3,-0.5)$)
+        to[out=270,in=90] ($(ce)+(0.3,-0.2)$)
+        to[out=270,in=0] ($(ce)+(-2,0)$)
+        to[out=180,in=270] ($(ac)+(-0.5,0)$);
+    \filldraw[fill=yellow!70] ($(ab)+(-0.5,0)$) 
+        to[out=90,in=180] ($(bd) + (0,0.5)$) 
+        to[out=0,in=330] ($(bc) + (0,-0.5)$)
+        to[out=150,in=300] ($(ab)+(-0.5,0)$);
+    \filldraw[fill=blue!70] ($(ab)+(-0.5,0.2)$)
+        to[out=90,in=180] ($(ab)+(0,0.5)$)
+        to[out=0,in=130] ($(ac)+(0.5,0.3)$)
+        to[out=310,in=0] ($(ac)+(0,-0.6)$)
+        to[out=180,in=270] ($(ab)+(-0.5,0.2)$);
+    \filldraw[fill=red!70] ($(bd)+(-0.5,0.2)$)
+        to[out=90,in=180] ($(bd)+(0.5,0.5)$)
+        to[out=0,in=90] ($(bc)+(0.5,-0.3)$)
+        to[out=270,in=270] ($(bc)+(-0.5,-0.3)$)
+        to[out=90,in=270] ($(bd)+(-0.5,0.2)$);
+     \filldraw[fill=purple!70] ($(ce)+(-0.5,0.2)$)
+        to[out=90,in=180] ($(ce)+(0,0.6)$)
+        to[out=0,in=90] ($(ce)+(0.5,0.5)$)
+        to[out=270,in=0] ($(ce)+(0,-0.6)$)
+        to[out=180,in=270] ($(ce)+(-0.5,0.2)$);
+    \end{scope}
+
+    \fill (ab) circle (0.1) node [below] {AB};
+    \fill (ac) circle (0.1) node [above] {AC};
+    \fill (bc) circle (0.1) node [below] {BC};
+    \fill (bd) circle (0.1) node [above] {BD};
+    \fill (cd) circle (0.1) node [below] {CD};
+    \fill (ce) circle (0.1) node [above] {CE};
+  \end{tikzpicture}
+  \caption{Hypergraphe de $G$}
+\end{figure}
 
 
 \section{Implémentation}

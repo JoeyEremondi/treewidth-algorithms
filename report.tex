@@ -251,7 +251,17 @@ treewidth sont faites, avec des paramètres pour hMetis différents.
 
 
 \section{Résultats et discussion}
-Tous nos test 
+Nos tests ont pour comparaisons les résultats de \cite{tree}. En
+général, nous obtenons une treewidth au plus 2 fois plus grande que la
+treewidth réelle.
+
+Cependant, sur certains exemples où le partitionnement se passe mal,
+on peut obtenir une treewidth 8 à 10 fois trop
+grande. Malheureusement, l'heuristique de partitionnement
+d'hypergraphe n'a aucune garantie de qualité au sens
+d'équirépartition des noeuds du contexte courant. 
+Notre stratégie pour augmenter la qualité du partitionnement est
+d'équilibrer le nombre d'hypernoeuds dans chaque partition.
 
 \bibliographystyle{amsplain}
 \bibliography{biblio}

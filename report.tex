@@ -118,7 +118,7 @@ Chaque noeud du dtree est construit par partitionnement récursif de $H(G)$.
 \paragraph{}
 Robertson et Seymour \cite{robert} ont montré qu'il existe toujours
 un partitionnement de $G(t)$ tel que chaque sous-graphe $G(t_l)$ et
-$G(t_r)$ contient au plus $2/3$ des noeuds du contexte de $t$.  Un
+$G(t_r)$ contient au moins $2/3$ des noeuds du contexte de $t$.  Un
 tel partitionnement permet d'assurer que notre algorithme donnera une
 approximation de la largeur arborescente d'au plus $4k+1$, avec $k$ la
 largeur arborescente du graphe original. 
@@ -255,8 +255,7 @@ treewidth sont faites en variant les paramètres de partition d'hMetis.
 
 \section{Résultats et discussion}
 Nos tests ont pour comparaisons les résultats de \cite{tree}.
-Nous obtenons en général une treewidth au plus 2 fois plus grande que la
-treewidth réelle.
+Nous obtenons en général une borne d'au plus 2 fois la treewidth réelle.
 Cependant, sur certains graphes de taille trop importante,
 nous obtenons un ratio d'approximation de 8.
 D'autres algorithmes d'approximations comme \textsc{GreedyFillIn}

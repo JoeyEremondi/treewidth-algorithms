@@ -4,13 +4,16 @@
 %\usepackage{a4wide}
 \usepackage{amsthm}
 \usepackage{amsmath}
-
+\usepackage{algorithm}
 
 \title{Modèles graphiques probabilistes}
 \author{Charles-Pierre Astolfi, Émile Contal} 
 \date{3 janvier 2012}
 
 \begin{document}
+\newtheorem*{mdef}{Définition}
+\newtheorem*{mthm}{Théorème}
+
 \maketitle
 
 \begin{abstract}
@@ -33,26 +36,38 @@ implémenté l'algorithme proposé et l'avons comparé à d'autres
 algorithmes de calcul de treewidth.
 
 
-\section{Définitions}
+\section{Théorie}
 
-Soit $G = (V,E)$ un graphe non-orienté sans boucle. On dira que $G$
-est connecté s'il existe un chemin entre chaque paire de sommets de
-$G$.
+Nous commençons cette section par quelques définitions qui nous seront
+utiles dans la suite.
 
+\begin{mdef}
+Soit $G = (V,E)$ un graphe non-orienté sans boucle. On dit que $G$ est
+connecté s'il existe un chemin entre chaque paire de sommets de $G$.
+\end{mdef}
 
+\begin{mdef}
 On dit que $G$ est triangulé si pour tout cycle de longueur supérieure
 strictement à 3, il existe une arête entre deux sommets non-adjacents
 du cycle. La largeur d'un graphe triangulé est la taille de sa plus
 grande clique moins 1.
+\end{mdef}
 
-Enfin, la largeur arborescente d'un graphe est la largeur minimale
-obtenable parmi toutes les triangulations possibles.
+\begin{mdef}
+La largeur arborescente d'un graphe est la largeur minimale obtenable
+parmi toutes les triangulations possibles.
+\end{mdef}
 
+\begin{mdef}
 Un \emph{dtree} d'un graphe $G$ non-orienté est un arbre binaire
 complet, dont les feuilles sont les arêtes de $G$.
+\end{mdef}
 
 Il permet de guider les algorithmes de partitionnement de type
 \emph{divide-et-conquere}.
+
+
+
 
 Il existe une définition de la largueur d'un dtree telle qu'on puisse
 construire une triangulation du graphe $G$ dont la largeur
@@ -72,7 +87,12 @@ d'approximation de la largeur arborescente, mais bien qu'on ait pas de
 garantie de trouver cette partition, l'algorithme semble battre en
 pratique toutes les autres heuristiques connues.
 
+
+
+
 \section{Implémentation}
+
+
 
 \section{Résultats et discussion}
 

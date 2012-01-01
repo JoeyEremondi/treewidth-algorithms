@@ -81,7 +81,7 @@ struct
    * system call to hmetis
    *)
   let callhmetis hgr ubFactor =
-    let _ = Unix.system ("./hmetis "^hgr^" 2 "^(string_of_int ubFactor)^" 10 4 1 3 0 0 > /dev/null") in
+    let _ = Unix.system ("./shmetis "^hgr^" 2 "^(string_of_int ubFactor)^" > /dev/null") in
     ( open_in (hgr^".part.2") )
       
   (**

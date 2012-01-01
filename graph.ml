@@ -26,7 +26,7 @@ module Graph =
                               (!g).e.(n1) <- n2::(!g).e.(n1);
                               (!g).e.(n2) <- n1::(!g).e.(n2) 
                   with x -> raise x)
-                | x -> failwith x)
+                | x -> ())
             | _ -> ()
         done; failwith "This won't happen"
       with End_of_file ->

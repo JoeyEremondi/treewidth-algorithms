@@ -10,5 +10,5 @@ let nbTrials = try
 with _ -> 5
 
 let tw = Treewidth.treewidth g nbTrials
-let () = printf "\napproximated treewidth : %d\n" tw
+let () = printf "%d\n" tw
 

@@ -4,10 +4,9 @@
 %\usepackage{a4wide}
 \usepackage{amsthm}
 \usepackage{amsmath}
-\usepackage{algorithm}
+\usepackage{url}
 \usepackage{tikz}
 \usetikzlibrary{topaths,calc}
-
 
 \title{Modèles graphiques probabilistes}
 \author{Charles-Pierre Astolfi, Émile Contal} 
@@ -20,13 +19,13 @@
 \maketitle
 
 \begin{abstract}
-Le but de cet article de donner un algorithme qui permette
+Le but de notre travail est d'évaluer un algorithme qui permet
 d'approximer la largeur arborescente (treewidth) d'un graphe.
 
 Beaucoup de problèmes de graphes (par exemple, l'inférence bayesienne)
 peuvent être résolus en temps polynomial sur des graphes de largeur
 arborescente bornée. Le calcul exact de la largeur arborescente est un
-problème est NP-complet et nécessite l'utilisation d'heuristiques. Ce
+problème NP-complet et nécessite l'utilisation d'heuristiques. Ce
 rapport est dédié à l'étude d'un de ces algorithmes, décrit dans
 \cite{rootpaper}.
 
@@ -34,7 +33,7 @@ rapport est dédié à l'étude d'un de ces algorithmes, décrit dans
 
 \section{Introduction}
 Dans le cadre de l'article ``A Practical Relaxation of Constant-Factor
-Treewidth Approximation Algorithms'' (\cite{rootpaper}), nous avons
+Treewidth Approximation Algorithms'' \cite{rootpaper}, nous avons
 implémenté l'algorithme proposé et l'avons comparé à d'autres
 algorithmes de calcul de treewidth.
 
@@ -66,31 +65,41 @@ Un \emph{dtree} d'un graphe $G$ non-orienté est un arbre binaire
 complet, dont les feuilles sont les arêtes de $G$.
 \end{mdef}
 
+\begin{mdef}
+Le \emph{contexte} d'un noeud $t$ d'un dtree est l'ensemble des noeuds
+qui représente le bord du sous-graphe $G(t)$ par rapport au graphe
+$G$. C'est-à-dire qu'un noeud $v$ apparait dans le contexte de $t$ si
+et seulement s'il y a $v-u$ dans $G$ avec $v$ dans $G(t)$ et $u$ hors
+de $G(t)$.
+\end{mdef}
 Il permet de guider les algorithmes de partitionnement de type
 \emph{divide-et-conquere}.
 
+\begin{mdef}
+Le \emph{cutset} d'un noeud $t$ d'un dtree est l'ensemble des noeuds
+communs à $G(t_l)$ et à $G(t_r)$ et qui ne sont pas dans le contexte
+de $t$.
+\end{mdef}
 
+Il est facile de vérifier que $context(t)$ et $cutset(t)$ sont des
+ensembles disjoints, ce qui motive la définition suivante : 
 
+\begin{mdef}
+$$
+cluster(t) = \left\{
+    \begin{array}{ll}
+        vars(t) & \mbox{ si $t$ est une feuille} \\
+        cutset(t) \cup context(t) & \mbox{ sinon.}
+    \end{array}
+\right.
+$$
+\end{mdef}
 
-Il existe une définition de la largueur d'un dtree telle qu'on puisse
-construire une triangulation du graphe $G$ dont la largeur
-arborescente est la largeur du dtree, ce qui borne la largeur
-arborescente de $G$.
-
-Notre objectif est de donc construire un dtree de largeur la plus
-petite possible ; pour ce faire on partitionne un hypergraphe $H(G)$
-définit ainsi :
-$$ H(G) = (E,\{ \{ (u,v) \in E \} \mid u \in V \}) $$
-
-Le partitionnement de $H(G)$ est fait, comme dans l'article, grâce à
-la librairie hMetis, qui utilise des heuristiques randomisées.
-
-On sait qu'il existe des partitions qui mènent à un bon ratio
-d'approximation de la largeur arborescente, mais bien qu'on ait pas de
-garantie de trouver cette partition, l'algorithme semble battre en
-pratique toutes les autres heuristiques connues.
-
-
+Ceci permet de définir la largeur d'un $dtree$ : 
+\begin{mdef}
+La \emph{largeur} d'un dtree est la taille de son plus gros cluster
+moins 1.
+\end{mdef}
 
 \begin{figure}[h!]
  \centering
@@ -205,13 +214,44 @@ pratique toutes les autres heuristiques connues.
   \caption{Hypergraphe de $G$}
 \end{figure}
 
+Hopkins et Derwiche \cite{hop} ont proposé une transformation
+polynomiale qui conserve la largeur entre les dtrees et les graphes
+triangulés. C'est-à-dire qu'il est possible pour un graphe $G$ de
+convertir une triangulation de $G$ de largeur $w$ en un dtree de
+largeur $w$ et vice-versa. Cela donne ainsi une borne sur la largeur
+arborescente de $G$.
+
+Notre objectif est de donc construire un dtree de largeur la plus
+petite possible ; pour ce faire on partitionne un hypergraphe $H(G)$
+définit ainsi :
+$$ H(G) = (E,\{ \{ (u,v) \in E \} \mid u \in V \}) $$
+
+Le partitionnement de $H(G)$ est fait, comme dans l'article, grâce à
+la librairie hMetis, qui utilise des heuristiques randomisées.
+
+Robertson et Seymour \cite{robert} ont montré qu'il existait toujours
+un partitionnement de $G(t)$ tel que chaque sous-graphe $G(t_l)$ et
+$G(t_r)$ contiennent au plus $2/3$ des noeuds du contexte de $t$.  Un
+tel partitionnement permet d'assurer que notre algorithme donnera une
+approximation de la largeur arborescente d'au plus $4k+1$, avec $k$ la
+largeur arborescente du graphe original.  En pratique, nous n'avons
+aucune garantie de la part de hMetis de trouver un tel partitionnement
+mais nos résultats expérimentaux montrent qu'on arrive à un facteur
+$2$ de la treewidth.
+
+
 
 \section{Implémentation}
+Nous avons réalisé l'implémentation en OCaml \cite{ocaml}, et le code
+est disponible à l'adresse
+\url{http://www.dptinfo.ens-cachan.fr/~cpastolf/treewidth.zip}
 
+Pour chaque execution du programme, de nombreuses approximations de la
+treewidth sont faites, avec des paramètres pour hMetis différents.
 
 
 \section{Résultats et discussion}
-
+Tous nos test 
 
 \bibliographystyle{amsplain}
 \bibliography{biblio}

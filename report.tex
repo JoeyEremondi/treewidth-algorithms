@@ -5,6 +5,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{url}
+\usepackage{float}
 \usepackage{tikz}
 \usetikzlibrary{topaths,calc}
 
@@ -64,6 +65,8 @@ parmi toutes les triangulations possibles.
 Un \emph{dtree} d'un graphe $G$ non-orienté est un arbre binaire
 complet, dont les feuilles sont les arêtes de $G$.
 \end{mdef}
+Il permet de guider les algorithmes de partitionnement de type
+\emph{divide-et-conquere}.
 
 \begin{mdef}
 Le \emph{contexte} d'un noeud $t$ d'un dtree est l'ensemble des noeuds
@@ -72,8 +75,6 @@ $G$. C'est-à-dire qu'un noeud $v$ apparait dans le contexte de $t$ si
 et seulement s'il y a $v-u$ dans $G$ avec $v$ dans $G(t)$ et $u$ hors
 de $G(t)$.
 \end{mdef}
-Il permet de guider les algorithmes de partitionnement de type
-\emph{divide-et-conquere}.
 
 \begin{mdef}
 Le \emph{cutset} d'un noeud $t$ d'un dtree est l'ensemble des noeuds
@@ -101,7 +102,33 @@ La \emph{largeur} d'un dtree est la taille de son plus gros cluster
 moins 1.
 \end{mdef}
 
-\begin{figure}[h!]
+Hopkins et Derwiche \cite{hop} ont proposé une transformation
+polynomiale qui conserve la largeur entre un dtree et une
+triangulation d'un graphe.
+Un dtree de largeur $w$ d'un graphe $G$ permet
+de construire une triangulation de même largeur
+et ainsi borner la largeur arborescente de $G$ par $w$.
+
+Notre objectif est de donc construire un dtree de largeur la plus
+petite possible ; pour ce faire on partitionne un hypergraphe $H(G)$
+définit ainsi :
+$$ H(G) = (E,\{ \{ (u,v) \in E \} \mid u \in V \}) $$
+Chaque noeud du dtree est construit par partitionnement récursif de $H(G)$.
+
+\paragraph{}
+Robertson et Seymour \cite{robert} ont montré qu'il existe toujours
+un partitionnement de $G(t)$ tel que chaque sous-graphe $G(t_l)$ et
+$G(t_r)$ contiennent au plus $2/3$ des noeuds du contexte de $t$.  Un
+tel partitionnement permet d'assurer que notre algorithme donnera une
+approximation de la largeur arborescente d'au plus $4k+1$, avec $k$ la
+largeur arborescente du graphe original. 
+
+En pratique, nous n'avons aucune garantie de trouver un tel partitionnement,
+cependant l'article affirme obtenir de très bons résultats.
+
+\newpage
+
+\begin{figure}[H]
  \centering
 \begin{tikzpicture}[auto, node distance=2cm]
   \node[] (1) {A};
@@ -120,52 +147,8 @@ moins 1.
 \caption{Exemple de graphe $G$}
 \end{figure}
 
-\begin{figure}[h!]
-  \tikzstyle{internal} = [rectangle, draw]
-  \tikzstyle{level 1} = [sibling distance=4cm]
-  \tikzstyle{level 2} = [sibling distance=3cm]
-  \tikzstyle{level 3} = [sibling distance=2cm]
-  \tikzstyle{level 4} = [sibling distance=1.5cm]
+\begin{figure}[H]
   \centering
- \begin{tikzpicture}
-    \node [internal] (0) {(\{B,C\}, \{\})}
-    child{
-      node [internal] (1) { (\{A\}, \{B,C\}) }
-      child{
-        node[] (2) { AB }
-      }
-      child{
-        node[] (3) { AC }
-      }
-    }
-    child{ 
-      node [internal] (4) { (\{\}, \{B,C\}) }
-      child{
-        node[] (5) { CE }
-      }
-      child{
-        node [internal] (6) { (\{\}, \{B,C\}) }
-        child{
-          node [] (7) {BC}
-        }
-        child {
-          node [internal] (8)  { (\{D\}, \{B,C\}) }
-          child{
-            node[] (9) {CD}
-          }
-          child{
-            node[] (10) {BD}
-          }
-        }
-      }
-    };
- \end{tikzpicture}
- \caption{Exemple de dtree du graphe $G$ avec les contextes et cutsets}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-
   \begin{tikzpicture}
     \node (ab) at (0,2) {};
     \node (ac) at (0,0) {};
@@ -211,53 +194,75 @@ moins 1.
     \fill (cd) circle (0.1) node [below] {CD};
     \fill (ce) circle (0.1) node [above] {CE};
   \end{tikzpicture}
-  \caption{Hypergraphe de $G$}
+  \caption{Hypergraphe $H(G)$}
 \end{figure}
 
-Hopkins et Derwiche \cite{hop} ont proposé une transformation
-polynomiale qui conserve la largeur entre les dtrees et les graphes
-triangulés. C'est-à-dire qu'il est possible pour un graphe $G$ de
-convertir une triangulation de $G$ de largeur $w$ en un dtree de
-largeur $w$ et vice-versa. Cela donne ainsi une borne sur la largeur
-arborescente de $G$.
+\begin{figure}[H]
+  \tikzstyle{internal} = [rectangle, draw]
+  \tikzstyle{level 1} = [sibling distance=4cm]
+  \tikzstyle{level 2} = [sibling distance=3cm]
+  \tikzstyle{level 3} = [sibling distance=2cm]
+  \tikzstyle{level 4} = [sibling distance=1.5cm]
+  \centering
+ \begin{tikzpicture}
+    \node [internal] (0) {(\{B,C\}, \{\})}
+    child{
+      node [internal] (1) { (\{A\}, \{B,C\}) }
+      child{
+        node[] (2) { AB }
+      }
+      child{
+        node[] (3) { AC }
+      }
+    }
+    child{ 
+      node [internal] (4) { (\{\}, \{B,C\}) }
+      child{
+        node[] (5) { CE }
+      }
+      child{
+        node [internal] (6) { (\{\}, \{B,C\}) }
+        child{
+          node [] (7) {BC}
+        }
+        child {
+          node [internal] (8)  { (\{D\}, \{B,C\}) }
+          child{
+            node[] (9) {CD}
+          }
+          child{
+            node[] (10) {BD}
+          }
+        }
+      }
+    };
+ \end{tikzpicture}
+ \caption{Exemple de dtree de largeur $2=3-1$ du graphe $G$ avec les contextes et cutsets}
+\end{figure}
 
-Notre objectif est de donc construire un dtree de largeur la plus
-petite possible ; pour ce faire on partitionne un hypergraphe $H(G)$
-définit ainsi :
-$$ H(G) = (E,\{ \{ (u,v) \in E \} \mid u \in V \}) $$
-
-Le partitionnement de $H(G)$ est fait, comme dans l'article, grâce à
-la librairie hMetis, qui utilise des heuristiques randomisées.
-
-Robertson et Seymour \cite{robert} ont montré qu'il existait toujours
-un partitionnement de $G(t)$ tel que chaque sous-graphe $G(t_l)$ et
-$G(t_r)$ contiennent au plus $2/3$ des noeuds du contexte de $t$.  Un
-tel partitionnement permet d'assurer que notre algorithme donnera une
-approximation de la largeur arborescente d'au plus $4k+1$, avec $k$ la
-largeur arborescente du graphe original.  En pratique, nous n'avons
-aucune garantie de la part de hMetis de trouver un tel partitionnement
-mais nos résultats expérimentaux montrent qu'on arrive à un facteur
-$2$ de la treewidth.
-
-
+\newpage
 
 \section{Implémentation}
 Nous avons réalisé l'implémentation en OCaml \cite{ocaml}, et le code
 est disponible à l'adresse
 \url{http://www.dptinfo.ens-cachan.fr/~cpastolf/treewidth.zip}
 
+Le partitionnement de $H(G)$ est fait, comme dans l'article, grâce à
+la librairie hMetis, qui utilise des heuristiques randomisées.
 Pour chaque execution du programme, de nombreuses approximations de la
-treewidth sont faites, avec des paramètres pour hMetis différents.
+treewidth sont faites en variant les paramètres de partition d'hMetis.
 
 
 \section{Résultats et discussion}
-Nos tests ont pour comparaisons les résultats de \cite{tree}. En
-général, nous obtenons une treewidth au plus 2 fois plus grande que la
+Nos tests ont pour comparaisons les résultats de \cite{tree}.
+Nous obtenons en général une treewidth au plus 2 fois plus grande que la
 treewidth réelle.
+Cependant, sur certains graphes de taille trop importante,
+nous obtenons un ratio d'approximation de 8.
+D'autres algorithmes d'approximations comme \textsc{GreedyFillIn}
 
-Cependant, sur certains exemples où le partitionnement se passe mal,
-on peut obtenir une treewidth 8 à 10 fois trop
-grande. Malheureusement, l'heuristique de partitionnement
+
+Malheureusement, l'heuristique de partitionnement
 d'hypergraphe n'a aucune garantie de qualité au sens
 d'équirépartition des noeuds du contexte courant. 
 Notre stratégie pour augmenter la qualité du partitionnement est

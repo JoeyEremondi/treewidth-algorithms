@@ -270,71 +270,82 @@ Les algorithmes \ref{algo1} et \ref{algo2} explicitent notre implémentation.
   \caption{treewidth(graphe G)}
   \begin{algorithmic}
     \STATE let $hg =$ \mbox{creer-hypergraphe}$(G)$\\
-    \STATE let $d_t = hgr2bdt(hg)$\\
-    \RETURN $largeur(d_t)$\\
+    \STATE let $min\_tw=0$\\
+    \FOR {$\theta \in \Theta$}
+      \FOR{test $=1$ to nb\_tests}
+        \STATE let $d = hgr2bdt(hg, \theta)$\\
+        \STATE let $tw = largeur(d)$\\
+        \IF{$min\_tw=0$}
+          \STATE $min\_tw=tw$
+        \ELSE
+          \STATE $min\_tw=\min(min\_tw, tw)$
+        \ENDIF
+      \ENDFOR
+    \ENDFOR
+    \RETURN $min\_tw$ 
   \end{algorithmic}
   \label{algo1}
 \end{algorithm}
 
+\vspace{1cm}
+
 \begin{algorithm}
-  \caption{hgr2bdt(hypergraphe H)}
+  \caption{hgr2bdt(hypergraphe H, paramètres $\theta$)}
   \begin{algorithmic}
     \IF{$H$ est réduit à un noeud $N_F$}
         \STATE $vars(t) \gets F$
         \STATE $t_l \gets NULL$
         \STATE $t_r \gets NULL$
     \ELSE
-        \STATE partitionner $H$ en $H_l$ et $H_r$
-        \STATE $t_l \gets hgr2bdt(H_l)$
-        \STATE $t_r \gets hgr2bdt(H_r)$
+        \STATE partitionner $H$ en $H_l$ et $H_r$ suivant $\theta$
+        \STATE $t_l \gets hgr2bdt(H_l, \theta)$
+        \STATE $t_r \gets hgr2bdt(H_r, \theta)$
     \ENDIF
   \end{algorithmic}
   \label{algo2}
 \end{algorithm}
 
 
-
+\newpage
 \section{Résultats et discussion}
-Nos tests ont pour comparaisons les résultats de \cite{tree} et
-\cite{ref}.  Nous obtenons en général une borne d'au plus 2 fois la
-treewidth réelle.  Cependant, sur certains graphes (en général de
-grande taille), nous obtenons des résultats très grands (cf tableau
-des résultats), alors que les auteurs semble avoir une implémentation
-qui n'a pas ce défaut.  Malheureusement, la qualité du résultat dépend
-de la qualité du partitionnement qui est fait par hMetis. Or il faut
-régler 8 paramètres différents pour hMetis et nous n'avons
-probablement pas l'expérience des auteurs en matière de
-partitionnement d'hypergraphes...
-%D'autres algorithmes d'approximations comme \textsc{GreedyFillIn}
+Nos tests ont pour comparaisons les résultats de \cite{tree},
+\cite{ref} et bien sûr \cite{rootpaper}. Nous obtenons en général une
+borne d'au plus 2 fois la treewidth réelle. Cependant, sur certains
+graphes (en général de grande taille), nous obtenons de mauvais
+résultats (cf tableau des résultats), alors que les auteurs semblent
+avoir une implémentation qui n'a pas ce défaut.
 
+Malheureusement, la qualité du résultat dépend du partitionnement qui
+est fait par hMetis.  L'heuristique n'a aucune garantie de qualité au
+sens d'équirépartition des noeuds du contexte courant.  Comme dans
+l'article, notre stratégie pour améliorer le partitionnement est
+d'équilibrer le nombre d'hypernoeuds dans chaque partition.
+L'exploration de tout l'espace des paramètres de partitionnement, n'a
+pas permis d'atteindre les performances annoncées.
 
-Malheureusement, l'heuristique de partitionnement d'hypergraphe n'a
-aucune garantie de qualité au sens d'équirépartition des noeuds du
-contexte courant. Notre stratégie pour augmenter la qualité du
-partitionnement est d'équilibrer le nombre d'hypernoeuds dans chaque
-partition.
+\vspace{1.5cm}
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \begin{tabular}{r|l|l|l|l|l|l|l}
-    graphe   & $\mid V \mid$ & $\mid E \mid$ & Nous  & TW & Article & BB & GreedyFillIn\\
+    graphe   & $\mid V \mid$ & $\mid E \mid$ & TW  & Nous & Article & BB & GreedyFillIn\\
     \hline
-    munin1   & 189 & 366 & 80   & 11 & 11 & ? & 11\\
-    munin2   & 1003& 1662&361  & 7  & 9 & ? & 7\\
-    munin3   & 1044& 1745&377  & 7  & 8 & ? & 7\\
-    munin4   & 1041& 1843&381  & 8  & 9 & ? & 8\\
-    water    & 32  &123 & 17   & 9  & 10 & 10 & 10 \\
-    mildew   & 35  & 80 & 13   & 4  & 5 & 4 & 4 \\
-    queen5-5 & 25 & 320 &21   & 18 & ? & 18 & 18\\
-    queen6-6 & 36 & 580 &30   & 25 & ? & 27 & 26\\
-    queen7-7 & 49 & 952 &43   & 35 & ? & ? & 37\\
-    barley   & 48 & 126 &23   & 7  & 7 & 7 & 7 \\
-    alarm    & 37 & 65 &12   & 4  &  4 & 4 & 4\\
-    myciel3  & 11 & 20 &7    & 5  & ? & ? & 5\\
-    myciel4  & 23 & 71& 14   & 10 & ? & 11 & 11\\
-    myciel5  & 47 & 236&32   & 19 & ? & 20 & 21\\
-    david    & 87 & 812 &41   & 13 & ? & 13 & 13\\
-    oesoca+  & 67 & 208 &24   & 11 & ? & 11 & 11\\
+    water    & 32  &123 & 9   & 17  & 10 & 10 & 10 \\
+    mildew   & 35  & 80 & 4   & 13  & 5 & 4 & 4 \\
+    queen5-5 & 25 & 320 &18   & 21 & ? & 18 & 18\\
+    queen6-6 & 36 & 580 &25   & 30 & ? & 27 & 26\\
+    queen7-7 & 49 & 952 &35   & 43 & ? & ? & 37\\
+    barley   & 48 & 126 &7   & 23  & 7 & 7 & 7 \\
+    alarm    & 37 & 65 &4   & 12  &  4 & 4 & 4\\
+    myciel3  & 11 & 20 &5    & 7  & ? & ? & 5\\
+    myciel4  & 23 & 71& 10   & 14 & ? & 11 & 11\\
+    myciel5  & 47 & 236&19   & 32 & ? & 20 & 21\\
+    oesoca+  & 67 & 208 &11   & 24 & ? & 11 & 11\\
+    munin1   & 189 & 366 & 11   & 80 & 11 & ? & 11\\
+    munin2   & 1003& 1662&7  & 361  & 9 & ? & 7\\
+    munin3   & 1044& 1745&7  & 377  & 8 & ? & 7\\
+    munin4   & 1041& 1843&8  & 381  & 9 & ? & 8\\
+    david    & 87 & 812 &13   & 41 & ? & 13 & 13\\
   \end{tabular}
   \caption{Comparaison de notre algorithme à d'autres heuristiques et
     aux résultats annoncés dans l'article. Les ``?'' signifient qu'il
@@ -343,7 +354,7 @@ partition.
   \label{fig}
 \end{figure}
 
-
+\newpage
 \bibliographystyle{amsplain}
 \bibliography{biblio}
 

@@ -5,6 +5,7 @@ open Printf
 
 module Treewidth =
   struct
+
     (**
      * fun hyperGraph -> int -> dtree
      * build a dtree following the recursive partitions of the hypergraph
@@ -27,13 +28,13 @@ module Treewidth =
         
       for ubPower=0 to 4 do
         let ubFactor = int_of_float(2. ** (float_of_int ubPower)) in
-        printf "\nub:%d\n" ubFactor; flush stdout;
+        printf "ub:%d\n" ubFactor; flush stdout;
         
         for trial=1 to nbTrials do
           let dt = hgr2bdt h ubFactor in
             
           let sz = Dtree.size g dt in
-          printf "%d " sz; flush stdout;
+          printf "%d\r" sz; flush stdout;
           min_sz := if !min_sz = 0 then sz else min !min_sz sz
         done
       done;

@@ -13,19 +13,19 @@ struct
   }
       
   (**
-   * fun graph -> hypergraph
-   * hyper vertices are edges of g
-   * hyper edges are sets of edges with a common endpoint
-   *)  
+     * fun graph -> hypergraph
+     * hyper vertices are edges of g
+     * hyper edges are sets of edges with a common endpoint
+  *)  
   let from_graph g =
     let e2hv_map = Hashtbl.create g.Graph.m in
     let hv2e_map = Hashtbl.create g.Graph.m in
     let n = ref 0 in
     
     (**
-     * int list -> int list
-     * for each vertex u, we build an hyper edge which connect all edges from u
-     *)
+       * int list -> int list
+       * for each vertex u, we build an hyper edge which connect all edges from u
+    *)
     let build_hg u l =
       let bind_hv v =
         let edge = if u < v then (u,v) else (v,u) in
@@ -52,19 +52,19 @@ struct
     }
       
   (**
-   * hypergraph -> (int*int) option
-   * return the hyper vertex if h is reduced to an unique edge
-   *) 
+     * hypergraph -> (int*int) option
+     * return the hyper vertex if h is reduced to an unique edge
+  *) 
   let get_sole_vertex h =
     if h.n == 1 then
       Some (h.hv2e 0)
     else
       None
-  
+	
   (**
-   * hypergraph -> filename
-   * write h in a.hgr format
-   *)
+     * hypergraph -> filename
+     * write h in a.hgr format
+  *)
   let to_hgr h =
     let name = "hypergraph.hgr" in
     let out = open_out name in
@@ -77,17 +77,18 @@ struct
     name
       
   (**
-   * string -> int -> in_chan
-   * system call to hmetis
-   *)
+     * string -> int -> in_chan
+     * system call to hmetis
+  *)
   let callhmetis hgr ubFactor =
     let _ = Unix.system ("./shmetis "^hgr^" 2 "^(string_of_int ubFactor)^" > /dev/null") in
-    ( open_in (hgr^".part.2") )
+    Scanf.scanf "%s\n" (fun i -> i);
+    open_in (hgr^".part.2")
       
   (**
-   * hypergraph -> int -> (hypergraph * hypergraph)
-   * partition h in two hypergraph via hmetis
-   *)
+     * hypergraph -> int -> (hypergraph * hypergraph)
+     * partition h in two hypergraph via hmetis
+  *)
   let partition h ubFactor =
     let nl = ref 0
     and nr = ref 0
@@ -134,9 +135,9 @@ struct
     let build_parts he =
       (** return part of he if all v are in the same part, -1 otherwise **)
       let part_of_he = List.fold_left (fun r part -> begin
-          if r = -2 then part (* init *)
-          else if r = part then part else -1
-        end ) (-2) he in
+        if r = -2 then part (* init *)
+        else if r = part then part else -1
+      end ) (-2) he in
       
       if part_of_he = 0 then begin
         let renamed_he = List.map (fun u -> e2hv_r (h.hv2e u) ) he in
@@ -147,7 +148,7 @@ struct
         he_l := renamed_he :: !he_l
       end      
     in
-        
+    
     List.iter build_parts h.he;
     
     let l = {
@@ -162,7 +163,7 @@ struct
       he= !he_r;
       hv2e= hv2e_r;
       e2hv= e2hv_r } in
-      
+    
     (l,r)
 end;;
 

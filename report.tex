@@ -5,6 +5,8 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{url}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{float}
 \usepackage{tikz}
 \usetikzlibrary{topaths,calc}
@@ -109,6 +111,9 @@ Un dtree de largeur $w$ d'un graphe $G$ permet
 de construire une triangulation de même largeur
 et ainsi borner la largeur arborescente de $G$ par $w$.
 
+C'est cette remarque que nous exploitons dans les algorithmes
+\ref{algo1} et \ref{algo2} pour calculer la treewidth.
+
 Notre objectif est de donc construire un dtree de largeur la plus
 petite possible ; pour ce faire on partitionne un hypergraphe $H(G)$
 définit ainsi :
@@ -126,6 +131,9 @@ largeur arborescente du graphe original.
 En pratique, nous n'avons aucune garantie de trouver un tel partitionnement,
 cependant l'article affirme obtenir de très bons résultats.
 
+\paragraph{}
+Un exemple de graphe, d'hypergraphe correspondant et de dtree se
+trouve dans les figures \ref{lol1}, \ref{lol2} et \ref{lol3}.
 \newpage
 
 \begin{figure}[H]
@@ -145,9 +153,11 @@ cependant l'article affirme obtenir de très bons résultats.
   (3) edge node {} (5);
 \end{tikzpicture}
 \caption{Exemple de graphe $G$}
+\label{lol1}
 \end{figure}
 
 \begin{figure}[H]
+\label{lol2}
   \centering
   \begin{tikzpicture}
     \node (ab) at (0,2) {};
@@ -238,6 +248,7 @@ cependant l'article affirme obtenir de très bons résultats.
     };
  \end{tikzpicture}
  \caption{Exemple de dtree de largeur $2=3-1$ du graphe $G$ avec les contextes et cutsets}
+\label{lol3}
 \end{figure}
 
 \newpage
@@ -252,20 +263,86 @@ la librairie hMetis, qui utilise des heuristiques randomisées.
 Pour chaque execution du programme, de nombreuses approximations de la
 treewidth sont faites en variant les paramètres de partition d'hMetis.
 
+Les algorithmes \ref{algo1} et \ref{algo2} explicitent notre implémentation.
+
+
+\begin{algorithm}
+  \caption{treewidth(graphe G)}
+  \begin{algorithmic}
+    \STATE let $hg =$ \mbox{creer-hypergraphe}$(G)$\\
+    \STATE let $d_t = hgr2bdt(hg)$\\
+    \RETURN $largeur(d_t)$\\
+  \end{algorithmic}
+  \label{algo1}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{hgr2bdt(hypergraphe H)}
+  \begin{algorithmic}
+    \IF{$H$ est réduit à un noeud $N_F$}
+        \STATE $vars(t) \gets F$
+        \STATE $t_l \gets NULL$
+        \STATE $t_r \gets NULL$
+    \ELSE
+        \STATE partitionner $H$ en $H_l$ et $H_r$
+        \STATE $t_l \gets hgr2bdt(H_l)$
+        \STATE $t_r \gets hgr2bdt(H_r)$
+    \ENDIF
+  \end{algorithmic}
+  \label{algo2}
+\end{algorithm}
+
+
 
 \section{Résultats et discussion}
-Nos tests ont pour comparaisons les résultats de \cite{tree}.
-Nous obtenons en général une borne d'au plus 2 fois la treewidth réelle.
-Cependant, sur certains graphes de taille trop importante,
-nous obtenons un ratio d'approximation de 8.
-D'autres algorithmes d'approximations comme \textsc{GreedyFillIn}
+Nos tests ont pour comparaisons les résultats de \cite{tree} et
+\cite{ref}.  Nous obtenons en général une borne d'au plus 2 fois la
+treewidth réelle.  Cependant, sur certains graphes (en général de
+grande taille), nous obtenons des résultats très grands (cf tableau
+des résultats), alors que les auteurs semble avoir une implémentation
+qui n'a pas ce défaut.  Malheureusement, la qualité du résultat dépend
+de la qualité du partitionnement qui est fait par hMetis. Or il faut
+régler 8 paramètres différents pour hMetis et nous n'avons
+probablement pas l'expérience des auteurs en matière de
+partitionnement d'hypergraphes...
+%D'autres algorithmes d'approximations comme \textsc{GreedyFillIn}
 
 
-Malheureusement, l'heuristique de partitionnement
-d'hypergraphe n'a aucune garantie de qualité au sens
-d'équirépartition des noeuds du contexte courant. 
-Notre stratégie pour augmenter la qualité du partitionnement est
-d'équilibrer le nombre d'hypernoeuds dans chaque partition.
+Malheureusement, l'heuristique de partitionnement d'hypergraphe n'a
+aucune garantie de qualité au sens d'équirépartition des noeuds du
+contexte courant. Notre stratégie pour augmenter la qualité du
+partitionnement est d'équilibrer le nombre d'hypernoeuds dans chaque
+partition.
+
+\begin{figure}
+  \centering
+  \begin{tabular}{r|l|l|l|l|l|l|l}
+    graphe   & $\mid V \mid$ & $\mid E \mid$ & Nous  & TW & Article & BB & GreedyFillIn\\
+    \hline
+    munin1   & 189 & 366 & 80   & 11 & 11 & ? & 11\\
+    munin2   & 1003& 1662&361  & 7  & 9 & ? & 7\\
+    munin3   & 1044& 1745&377  & 7  & 8 & ? & 7\\
+    munin4   & 1041& 1843&381  & 8  & 9 & ? & 8\\
+    water    & 32  &123 & 17   & 9  & 10 & 10 & 10 \\
+    mildew   & 35  & 80 & 13   & 4  & 5 & 4 & 4 \\
+    queen5-5 & 25 & 320 &21   & 18 & ? & 18 & 18\\
+    queen6-6 & 36 & 580 &30   & 25 & ? & 27 & 26\\
+    queen7-7 & 49 & 952 &43   & 35 & ? & ? & 37\\
+    barley   & 48 & 126 &23   & 7  & 7 & 7 & 7 \\
+    alarm    & 37 & 65 &12   & 4  &  4 & 4 & 4\\
+    myciel3  & 11 & 20 &7    & 5  & ? & ? & 5\\
+    myciel4  & 23 & 71& 14   & 10 & ? & 11 & 11\\
+    myciel5  & 47 & 236&32   & 19 & ? & 20 & 21\\
+    david    & 87 & 812 &41   & 13 & ? & 13 & 13\\
+    oesoca+  & 67 & 208 &24   & 11 & ? & 11 & 11\\
+  \end{tabular}
+  \caption{Comparaison de notre algorithme à d'autres heuristiques et
+    aux résultats annoncés dans l'article. Les ``?'' signifient qu'il
+    n'y a pas de résultat disponible pour le graphe et l'heuristique
+    concernée.}
+  \label{fig}
+\end{figure}
+
 
 \bibliographystyle{amsplain}
 \bibliography{biblio}

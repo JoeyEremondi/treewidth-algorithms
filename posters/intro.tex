@@ -1,46 +1,30 @@
-\documentclass[final]{beamer} % beamer 3.10: do NOT use option
-                              % hyperref={pdfpagelabels=false} !
-  %\documentclass[final,hyperref={pdfpagelabels=false}]{beamer} %
-  %beamer 3.07: get rid of beamer warnings
-  \mode<presentation> {  %% check
-    %% http://www-i6.informatik.rwth-aachen.de/~dreuw/latexbeamerposter.php for examples
-    \usetheme{Warsaw}    %% you should define your own theme e.g. for
-    %% big headlines using your own logos 
-  }
-  \usepackage[french]{babel}
-  \usepackage[utf8]{inputenc}
-  \usepackage{amsmath,amsthm, amssymb, latexsym}
-  %\usepackage{times}\usefonttheme{professionalfonts}  % times is
-  %obsolete
-  \usefonttheme[onlymath]{serif}
-  \boldmath
-  \usepackage[orientation=landscape,size=a4,scale=1.4]{beamerposter}
-  % e.g. for DIN-A0 poster
-  %\usepackage[orientation=portrait,size=a1,scale=1.4,grid,debug]{beamerposter}
-  %% e.g. for DIN-A1 poster, with optional grid and debug output
-  %\usepackage[size=custom,width=200,height=120,scale=2,debug]{beamerposter}
-  %% e.g. for custom size poster
-  %\usepackage[orientation=portrait,size=a0,scale=1.0,printer=rwth-glossy-uv.df]{beamerposter}
-  %% e.g. for DIN-A0 poster with rwth-glossy-uv printer check
-  % ...
-  %
+\documentclass[handout]{beamer}
+\usetheme{Warsaw}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsthm, amssymb, latexsym}
+\usefonttheme[onlymath]{serif}
+\boldmath
+\usepackage[orientation=landscape,size=a4,scale=1.4]{beamerposter}
+
 \title{\VeryHuge A Practical Relaxation of Constant-factor Treewidth
         Approximation Algorithms}
-  \author{\huge Émile Contal et Charles-Pierre Astolfi}
-  \date{}
-  \begin{document}
-  \begin{frame}{} 
-\maketitle
-\begin{block}
-\centering
-\huge Le but de notre travail a été d'évaluer un algorithme qui permet
-d'approximer la largeur arborescente (treewidth) d'un graphe.
+\author{\huge Émile Contal et Charles-Pierre Astolfi}
+\date{MVA semestre 1}
 
-Beaucoup de problèmes de graphes comme l'inférence bayésienne peuvent
-être résolus en temps polynomial sur des graphes de largeur
-arborescente bornée. Le calcul exact de la largeur arborescente est un
-problème NP-complet et nécessite l'utilisation d'heuristiques.
-\end{block}
-  \end{frame}
-  \end{document}
-  
+\begin{document}
+\begin{frame}
+  \maketitle
+  \begin{block}
+    \centering
+    \huge Le but de notre travail a été d'évaluer un algorithme qui permet
+    d'approximer la largeur arborescente (treewidth) d'un graphe.
+    Beaucoup de problèmes de graphes comme l'inférence bayésienne peuvent
+    être résolus en temps polynomial sur des graphes de largeur
+    arborescente bornée. 
+    \cite{bayesian_inferance} % http://www.cs.ru.nl/~johank/ECAI-623.pdf
+    Le calcul exact de la largeur arborescente est un
+    problème NP-complet et nécessite l'utilisation d'heuristiques.
+  \end{block}
+\end{frame}
+\end{document}  

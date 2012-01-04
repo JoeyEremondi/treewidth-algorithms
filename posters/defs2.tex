@@ -1,0 +1,50 @@
+
+\documentclass[handout]{beamer}
+\usetheme{Warsaw}
+\setbeamertemplate{footline}{}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsthm, amssymb, latexsym}
+\boldmath
+\usepackage[orientation=landscape,size=a4,scale=1.0]{beamerposter}
+
+\newtheorem*{mdef}{Définition}
+\newtheorem*{mthm}{Théorème}
+
+\begin{document}
+
+\begin{frame}
+
+\begin{mdef}
+Le $contexte$ d'un noeud $t$ d'un dtree est l'ensemble des noeuds
+qui représente le bord du sous-graphe $G(t)$ par rapport au graphe
+$G$. C'est-à-dire qu'un noeud $v$ apparait dans le contexte de $t$ si
+et seulement s'il y a $v-u$ dans $G$ avec $v$ dans $G(t)$ et $u$ hors
+de $G(t)$.
+\end{mdef}
+
+\begin{mdef}
+Le $cutset$ d'un noeud $t$ d'un dtree est l'ensemble des noeuds
+communs à $G(t_l)$ et à $G(t_r)$ et qui ne sont pas dans le contexte
+de $t$.
+\end{mdef}
+
+\begin{mdef}
+$$
+cluster(t) = \left\{
+    \begin{array}{ll}
+        vars(t) & \mbox{ si $t$ est une feuille} \\
+        cutset(t) \cup context(t) & \mbox{ sinon.}
+    \end{array}
+\right.
+$$
+\end{mdef}
+
+Ceci permet de définir la largeur d'un $dtree$ : 
+\begin{mdef}
+La $largeur$ d'un dtree est la taille de son plus gros cluster
+moins 1.
+\end{mdef}
+
+\end{frame}
+\end{document}

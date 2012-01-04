@@ -1,0 +1,38 @@
+\documentclass[handout]{beamer}
+\usetheme{Warsaw}
+\setbeamertemplate{footline}{}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsthm, amssymb, latexsym}
+\boldmath
+\usepackage[orientation=landscape,size=a4,scale=1.0]{beamerposter}
+
+\newtheorem*{mdef}{Définition}
+\newtheorem*{mthm}{Théorème}
+
+\begin{document}
+
+\begin{frame}
+
+\begin{mdef}
+On dit que $G$ est $triangul\acute{e}$ si pour tout cycle de longueur supérieure
+strictement à 3, il existe une arête entre deux sommets non-adjacents
+du cycle. La $largeur$ d'un graphe triangulé est la taille de sa plus
+grande clique moins 1.
+\end{mdef}
+
+\begin{mdef}
+La $largeur\ arborescente$ d'un graphe est la largeur minimale obtenable
+parmi toutes les triangulations possibles.
+\end{mdef}
+
+\begin{mdef}
+Un $dtree$ d'un graphe $G$ non-orienté est un arbre binaire
+complet, dont les feuilles sont les arêtes de $G$.
+\end{mdef}
+
+Il permet de guider les algorithmes de partitionnement de type
+\emph{divide-et-conquere}.
+
+\end{frame}
+\end{document}

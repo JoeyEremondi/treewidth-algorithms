@@ -1,0 +1,38 @@
+\documentclass[handout]{beamer}
+\usetheme{Warsaw}
+\setbeamertemplate{footline}{}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsthm, amssymb, latexsym}
+\boldmath
+\usepackage[orientation=landscape,size=a4,scale=3]{beamerposter}
+
+\begin{document}
+
+\newtheorem*{mdef}{Définition}
+\newtheorem*{cor}{Corollaire}
+
+\begin{frame}
+\newtheorem*{prop_hd}{Proposition (Hopkins \& Derwiche)}
+\begin{prop_hd}
+   Soit un $dtree$ de largeur $w$ d'un graphe $G$,
+   on peut construire une triangulation de largeur $w$ de $G$.
+\end{prop_hd}
+\begin{cor}
+  S'il existe un $dtree$ de largeur $w$ d'un graphe $G$,
+  alors la $largeur\ arborescente$ de $G$ est majorée par $w$.
+\end{cor}
+
+\begin{mdef}
+On définit l'hypergraphe $H(G)$ du graphe $G$
+$$H(G) = (E,\{ \{ (u,v) \in E \} \mid u \in V \})$$
+\end{mdef}
+
+\begin{block}{Construction d'un $dtree$}
+  On créer un noeud du $dtree$ en partitionnant récursivement $H(G)$
+  en deux sous hypergraphes associés aux fils du noeud.\\
+  L'heuristique de partition se base sur l'équilibre des partitions.
+\end{block}
+
+\end{frame}
+\end{document}
